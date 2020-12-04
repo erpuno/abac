@@ -6,8 +6,8 @@ ABAC: Attribute Based Access Control
 STANDARDS
 ---------
 
-* ISO/IEC 29146:2016
-* NIST SP 800-162
+* <a href="https://www.iso.org/standard/45169.html">ISO/IEC 29146:2016</a>
+* <a href="https://csrc.nist.gov/publications/detail/sp/800-162/final">NIST SP 800-162</a>
 * XACML 3.0
 
 Credits
