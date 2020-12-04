@@ -1,0 +1,9 @@
+{application, abac,
+ [
+  {description, "ABAC Attribute Based Access Control"},
+  {vsn, "0.10.0"},
+  {registered, []},
+  {applications, [kernel,stdlib]},
+  {mod, { abac, []}},
+  {env, []}
+ ]}.
