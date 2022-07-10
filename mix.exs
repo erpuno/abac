@@ -4,7 +4,7 @@ defmodule ABAC.Mixfile do
   def project() do
     [
       app: :abac,
-      version: "1.7.0",
+      version: "1.7.1",
       elixir: "~> 1.8",
       description: "ABAC Attribute Based Access Control",
       package: package(),
