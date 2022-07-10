@@ -15,15 +15,12 @@ defmodule ABAC.PDP do
         ABAC.request(endpoint: e, resources: resources) = request,
         ABAC.rule(api_endpoint: e, type: :permit, object: o, condition: c, resource_match: rm) = rule
       ) do
-    x =
-      :lists.filter(
-        fn
-          ^o -> true
-          _ -> false
-        end,
-        resources
-      )
+    f = fn
+      ^o -> true
+      _ -> false
+    end
 
+    x = :lists.filter(f, resources)
     fold = fn _ -> :erlang.apply(:"Elixir.ABAC.Condition", c, [request, rule]) end
     x != [] and :erlang.apply(:lists, rm, [fold, x])
   end
