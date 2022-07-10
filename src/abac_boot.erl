@@ -16,15 +16,22 @@ policy(Default) -> [
                                                             target = "Development"}},
     rules        = [
       #rule{
-        api_endpoint = sign,
-        subject      = #subject_employee { roles = [register, executor],
-                                           routing = [executor],
-                                           org = Default},
-        type         = permit,
-        condition    = employee_check,
-        object       = #object_process { module = 'Elixir.Output.Proc',
-                                         stage = #sequenceFlow{source = "Created",
-                                         target = "Development"}}
+        api_endpoint   = sign,
+        subject        = #subject_employee{roles = [register, executor], routing = [executor], org = Default},
+        type           = permit,
+        condition      = employee_check,
+        resource_match = all,
+        object         = #object_process{module = 'Elixir.NewOutput.Proc',
+                                         stage = #sequenceFlow{source = "Created", target = "Development"}}
+      },
+      #rule{
+        api_endpoint   = sign,
+        subject        = #subject_employee{roles = [register, executor], routing = [executor], org = Default},
+        type           = permit,
+        condition      = employee_check,
+        resource_match = any,
+        object         = #object_file{sign = true}
+
       }
     ]
   }

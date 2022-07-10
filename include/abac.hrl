@@ -26,6 +26,7 @@
               description = <<>> :: binary(),
               type = auth :: auth | deny,
               condition = [] :: [] | list(),
+              resource_match = all :: all | any,
               subject = [] :: [],
               object = [] :: []
               }).
@@ -34,13 +35,14 @@
               id = [] :: binary(),
               api_endpoint = [] :: atom(),
               description = <<>> :: binary(),
-              combining = [] :: [] | atom(),
+              combining = all :: all | any,
               object = [] :: [] | tuple(),
               rules = [] :: [] | list()
                }).
 
 -record(rule_ref, {
                     id = [] :: [] | list() | binary(),
+                    resource_match = all :: all | any,
                     resource_type = [] :: [] | atom()
                   }).
 

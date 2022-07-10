@@ -15,7 +15,7 @@
                 corr = [] :: [] | tuple(),
                 notification = [] :: [] | tuple(),
                 stage_status = [] :: [] | tuple(),
-                file = [] :: [] | tuple(),
+                files = [] :: [] | tuple(),
                 employee = [] :: [] | tuple()
 }).
 

@@ -10,6 +10,7 @@ defmodule ABAC.Attributes do
     {resources, policy} = :lists.foldl(fn {name, _}, {r, acc} ->
       case object(name, c) do
         [] -> {r, acc}
+        x when is_list(x) -> {x ++ r, :lists.map(&ABAC.policy(id: :_, api_endpoint: e, description: :_, combining: :_, object: &1, rules: :_), x) ++ acc}
         x -> {[x | r], [ABAC.policy(id: :_, api_endpoint: e, description: :_, combining: :_, object: x, rules: :_) | acc]}
       end
     end, {[], []}, :lists.zip(:kvs.fields(:context), tl(:erlang.tuple_to_list(c))))
@@ -45,10 +46,8 @@ defmodule ABAC.Attributes do
     BPE.hist(task: BPE.sequenceFlow(source: source, target: target)) = :bpe.head(pid)
     ABAC.object_process(module: m, stage: BPE.sequenceFlow(source: source, target: target), status: sS)
   end
-  defp object(:file, ABAC.context(file: ERP.fileDesc(template: [], needSign: s, hash: c))), do:
-    ABAC.object_file(sign: s, convert: c)
-  defp object(:file, ABAC.context(file: ERP.fileDesc(needSign: s, hash: c))), do:
-    ABAC.object_file(type: :template, sign: s, convert: c)
+  defp object(:files, ABAC.context(files: [ERP.fileDesc() | _] = x)), do:
+    :lists.map(fn ERP.fileDesc(needSign: s, hash: c) -> ABAC.object_file(sign: s, convert: c) end, x) # TODO: file type
   defp object(:corr, ABAC.context(corr: ERP."Organization"(id: i))), do:
     ABAC.object_corr(id: i)
   defp object(:corr, ABAC.context(corr: ERP.orgEmail(email: e))), do:
