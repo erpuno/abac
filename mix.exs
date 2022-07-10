@@ -14,7 +14,7 @@ defmodule ABAC.Mixfile do
 
   def package do
     [
-      files: ~w(doc src mix.exs LICENSE),
+      files: ~w(doc include lib src mix.exs LICENSE),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :abac,
@@ -23,7 +23,7 @@ defmodule ABAC.Mixfile do
   end
 
   def application() do
-    [mod: {:abac, []}]
+      [ mod: {:abac, [:mnesia, :form, :nitro, :rocksdb, :kvs, :schema ]} ]
   end
 
   def deps() do

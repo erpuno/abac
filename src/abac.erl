@@ -5,11 +5,17 @@
 -include("objects.hrl").
 -include("subjects.hrl").
 -include_lib("kvs/include/metainfo.hrl").
+-include_lib("kvs/include/kvs.hrl").
 -behaviour(application).
 -behaviour(supervisor).
 -export([start/2, stop/1, init/1]).
 
-start(_StartType, _StartArgs) -> supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+start(_StartType, _StartArgs) ->
+   kvs:join([], #kvs{mod = kvs_rocks, db = "rocksdb"}),
+   kvs:join([], #kvs{mod = kvs_rocks, db = "stat"}),
+   kvs:join([], #kvs{mod = kvs_mnesia}),
+   erp:boot(),
+   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 stop(_State) -> ok.
 init([]) -> {ok, { {one_for_one, 5, 10}, []} }.
 
