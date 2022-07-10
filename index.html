@@ -53,15 +53,205 @@ $ iex -S mix
             </section>
     </article>
 </aside>
-<!--main>
+<main>
     <article>
-        <section>
+         <section>
+<h3>Архітектура</h3>
+
+<h4>Визначення стандарту</h4>
+
+    <p>На найвищому рівні система оперує правилами, яку групуються в політики, що
+    зв'язують об'єкти та суб'єкти системи розмежування. Запити в систему здійнюються
+    через інформаційну точку (Policy Information Point) в ядро системи (Policy Decision Point),
+    де знійснюєьться обчислення ефективного доступу. Самі правила зберігаються у
+    вбудованій в Erlang/OTP RDBMS mnesia (Policy Administration Point). Фронтальне API
+    визначається як точка виклику (Policy Enforcement Point).</p>
+
+<h4>Точки підключення</h4>
+
+    <p>Типи точок підключення, де здійснюються клієнтські виклики ABAC, визначаються наступним
+       переліком:</p>
+
+    <p>BLOCK    &mdash; Блокування користувача <br>
+       SEARCH   &mdash; Пошук документу по полям <br>
+       VIEW     &mdash; Видимі елементи: Табулятори, Меню, Помічники, Пошукові кнопки, Чат<br>
+       CREATE   &mdash; Створення документів, резолюцій, фільтрів, кнопок <br>
+       EDIT     &mdash; Редагування форм, додатків <br>
+       DELETE   &mdash; Видалення ділопроцесу певного документа <br>
+       NEXT     &mdash; Кнопки управління задачами <br>
+       REJECT   &mdash; Кнопки управління повернення <br>
+       SIGN     &mdash; Кнопки управління підписом <br>
+       REGISTER &mdash; Реєстрація документів <br>
+       CANCEL   &mdash; Кнопка відміна документа <br>
+       SEND     &mdash; Кнопка відправки документа <br>
+       RECEIVE  &mdash; Отримання документів з асинхронних ендпойнтів <br>
+       STATUS   &mdash; Панель управління для виконавців, до відома та помічників <br>
+
+<h4>Об'єкти</h4>
+
+   <figure><code>
+-record(object_process, {
+    module = [] :: [] | atom(),
+    stage = [] :: [] | list(),
+    status = [] :: [] | atom(),
+    sched = [] :: [] | tuple()
+}).
+
+-record(object_file, {
+    type = [] :: [] | term(),
+    sign = [] :: [] | boolean(),
+    convert = [] :: [] | failed | true | false
+}).
+
+-record(object_form, {
+    id = [] :: [] | atom(),
+    fields = [] :: [] | atom()
+}).
+
+-record(object_corr, {
+    id = [] :: [] | list() | binary(),
+    code = [] :: [] | list() | binary(),
+    sendType = [] :: [] | term(),
+    type = [] :: [] | list() | binary()
+}).
+
+-record(object_email, {
+    id = [] :: [] | list() | binary(),
+    email = [] :: [] | list() | binary(),
+    name = [] :: [] | list() | binary()
+}).
+
+-record(object_employee, {
+    id = [] :: [] | list() | binary(),
+    org = [] :: [] | list() | binary(),
+    branch = [] :: [] | list() | binary(),
+    roles = [] :: [] | list()
+}).
+
+   </code></figure>
+
+<h4>Суб'єкти</h4>
+
+   <figure><code>
+-record(subject_employee, {
+    id = [] :: [] | list() | binary(),
+    roles = [] :: [] | list(atom()),
+    routing = [] :: [] | atom(),
+    substitute_type = [] :: [] | assistant | delegat,
+    status = [] :: [] | atom(),
+    org = [] :: [] | list(),
+    branch = [] :: [] | list()
+}).
+   </code></figure>
+
+<h4>PEP</h4>
+
+   <figure><code>
+
+defmodule ABAC.API do
+  require ABAC
+
+  def decision(ABAC.request() = r) do
+       :erlang.apply(:"Elixir.ABAC.PDP", :decision, [r])
+  end
+
+  def decision(_), do: false
+end
+
+-record(request, {
+    type = [] :: [] | atom(),
+    endpoint = [] :: [] | atom(),
+    subject = [] :: [] | term(),
+    context = [] :: [] | term(),
+    resources = [] :: [] | list()
+}).
+
+-record(context, {
+    form = [] :: [] | tuple(),
+    pid  = [] :: [] | list() | binary(),
+    corr = [] :: [] | tuple(),
+    notification = [] :: [] | tuple(),
+    stage_status = [] :: [] | tuple(),
+    files = [] :: [] | tuple(),
+    employee = [] :: [] | tuple()
+}).
+   </code></figure>
+
+<h4>PDP</h4>
+
+   <figure><code>
+-record(rule, {
+    id = [] :: binary(),
+    api_endpoint = [] :: atom(),
+    description = <<>> :: binary(),
+    type = auth :: auth | deny,
+    condition = [] :: [] | list(),
+    resource_match = all :: all | any,
+    subject = [] :: [],
+    object = [] :: []
+}).
+
+-record(policy, {
+    id = [] :: binary(),
+    api_endpoint = [] :: atom(),
+    description = <<>> :: binary(),
+    combining = all :: all | any,
+    object = [] :: [] | tuple(),
+    rules = [] :: [] | list()
+}).
+
+   </code></figure>
+
+
+<h4>Приклад</h4>
+
+   <p>Приклад визначення політики для підпису всіх додатків:</p>
+
+   <figure><code>
+#policy{
+    api_endpoint = sign,
+    combining    = all,
+    object       = #object_process{
+                       module = 'Elixir.Output.Proc',
+                       stage = #sequenceFlow {
+                           source = "Created",
+                           target = "Development" }},
+    rules        = [
+      #rule{
+        api_endpoint   = sign,
+        type           = permit,
+        condition      = employee_check,
+        resource_match = all,
+        subject        = #subject_employee{
+                              roles = [register, executor],
+                              routing = [executor], org = Default},
+        object         = #object_process{
+                              module = 'Elixir.Output.Proc',
+                              stage = #sequenceFlow{
+                                    source = "Created",
+                                    target = "Development" }}},
+      #rule{
+        api_endpoint   = sign,
+        type           = permit,
+        condition      = employee_check,
+        resource_match = any,
+        object         = #object_file{sign = true},
+        subject        = #subject_employee{
+                              roles = [register, executor],
+                              routing = [executor],
+                              org = Default}
+
+      }
+    ]
+  }
+   </code></figure>
 
         </section>
     </article>
-</main-->
+</main>
 <aside>
     <article>
+
          <section>
 <h3>Розробники</h3>
 
