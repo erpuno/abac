@@ -8,6 +8,7 @@ defmodule ABAC.PDP do
     fold = fn ABAC.rule_ref(id: i) -> rule(request, :erlang.element(2, :kvs.get(:rule, i, KVS.kvs(mod: :kvs_mnesia)))) end
     :erlang.apply(:lists, c, [fold, r])
   end
+  
   def policy(_, _), do: false
 
   def rule(
