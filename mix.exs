@@ -4,7 +4,7 @@ defmodule ABAC.Mixfile do
   def project() do
     [
       app: :abac,
-      version: "0.11.3",
+      version: "1.7.0",
       elixir: "~> 1.8",
       description: "ABAC Attribute Based Access Control",
       package: package(),
@@ -29,7 +29,10 @@ defmodule ABAC.Mixfile do
   def deps() do
     [
       {:ex_doc, "~> 0.11", only: :dev},
-      {:form, "~> 5.8.7"}
+      {:form, "~> 7.4.1"},
+      {:bpe, "~> 7.6.4"},
+      {:kvs, "~> 9.4.8"},
+      {:schema, "~> 3.7.1"},
     ]
   end
 end

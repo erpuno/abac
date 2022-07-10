@@ -1,7 +1,10 @@
 -module(abac).
 -compile(export_all).
--include_lib("abac/include/acid.hrl").
--include_lib("form/include/meta.hrl").
+-include("abac.hrl").
+-include("request.hrl").
+-include("objects.hrl").
+-include("subjects.hrl").
+-include_lib("kvs/include/metainfo.hrl").
 -behaviour(application).
 -behaviour(supervisor).
 -export([start/2, stop/1, init/1]).
@@ -10,50 +13,18 @@ start(_StartType, _StartArgs) -> supervisor:start_link({local, ?MODULE}, ?MODULE
 stop(_State) -> ok.
 init([]) -> {ok, { {one_for_one, 5, 10}, []} }.
 
-find_rule([], _, _, _, _) -> [];
-find_rule([H | T], S, A, Ot, O) ->
-  case H of
-    #acid{subject=S,api_endpoint=A,object_type=Ot,object=O} -> H;
-    _ -> find_rule(T, S, A, Ot, O)
-  end.
-
-is_access_denied(Rules, Subject, Api_endpoint, Object_type, Object) ->
-  case find_rule(Rules, Subject, Api_endpoint, Object_type, Object) of
-    #acid{type = "deny"} -> true;
-    _ -> false
-  end.
-
-is_access_confirmed(Rules, Subject, Api_endpoint, Object_type, Object) ->
- not is_access_denied(Rules, Subject, Api_endpoint, Object_type, Object).
-
-get_doc_fields(create, #document{fields=Doc_fields}) -> get_doc_fields([], Doc_fields);
-get_doc_fields(R, [#field{required=false} = H | T]) -> get_doc_fields(R ++ H, T);
-get_doc_fields(R, [#field{required=true} | T]) -> get_doc_fields(R, T);
-get_doc_fields(R, []) -> R;
-get_doc_fields(_, #document{fields=Doc_fields}) -> Doc_fields.
-
-limited_fields(Fs, F, A) -> limited_fields(Fs, F, A, []).
-limited_fields(Fs, [#field{id=Id} = H | T], "auth" = A, R) ->
-  case lists:member(Id, Fs) of
-    true -> limited_fields(Fs, T, A, R);
-    false -> limited_fields(Fs, T, A, R ++ H)
-  end;
-limited_fields(Fs, [#field{id=Id} = H | T], "deny" = A, R) ->
-  case lists:member(Id, Fs) of
-    false -> limited_fields(Fs, T, A, R);
-    true -> limited_fields(Fs, T, A, R ++ H)
-  end;
-limited_fields(_, [], _, R) -> R.
-
-select_doc_fields(Rules, Subject, Api_endpoint, Object, Document) ->
-  case is_access_confirmed(Rules, Subject, Api_endpoint, "doc", Object) of
-    true ->
-      Rule = find_rule(Rules, Subject, Api_endpoint, "doc", Object),
-      case Rule of
-        [] -> Document;
-        #acid{type=Auth_type,field_spec=R} ->
-         Doc_fields = get_doc_fields(Api_endpoint, Document),
-         Document#document{fields=limited_fields(R, Doc_fields, Auth_type)}
-      end;
-    false -> []
-  end.
+metainfo() -> #schema { name = crm,  tables = tables() }.
+tables() -> [
+              #table  { name = rule, fields = record_info(fields, rule), instance = #rule{}, keys = record_info(fields, rule)},
+              #table  { name = policy, fields = record_info(fields, policy), instance = #policy{}, keys = record_info(fields, policy)},
+              #table  { name = rule_ref, fields = record_info(fields, rule_ref), instance = #rule_ref{} },
+              #table  { name = object_process, fields = record_info(fields, object_process), instance = #object_process{} },
+              #table  { name = object_file, fields = record_info(fields, object_file), instance = #object_file{}},
+              #table  { name = object_form, fields = record_info(fields, object_form), instance = #object_form{}},
+              #table  { name = object_corr, fields = record_info(fields, object_corr), instance = #object_corr{}},
+              #table  { name = object_email, fields = record_info(fields, object_email), instance = #object_email{}},
+              #table  { name = object_employee, fields = record_info(fields, object_employee), instance = #object_employee{}}
+              #table  { name = request, fields = record_info(fields, request), instance = #request{}},
+              #table  { name = context, fields = record_info(fields, context), instance = #context{}},
+              #table  { name = subject_employee, fields = record_info(fields, subject_employee), instance = #subject_employee{}}
+            ].
