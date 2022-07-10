@@ -4,8 +4,6 @@ defmodule ABAC.PDP do
   require KVS
   require Record
 
-  def policy(request, ABAC.policy(rules: r, combining: :all)), do: :lists.all(&rule(request, &1), r)
-  def policy(request, ABAC.policy(rules: r, combining: :any)), do: :lists.any(&rule(request, &1), r)
   def policy(request, ABAC.policy(rules: r, combining: c)) do
     fold = fn ABAC.rule_ref(id: i) -> rule(request, :erlang.element(2, :kvs.get(:rule, i, KVS.kvs(mod: :kvs_mnesia)))) end
     :erlang.apply(:lists, c, [fold, r])
