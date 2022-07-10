@@ -8,7 +8,7 @@ config :bpe,
   ping_discipline: :undefined,
   shutdown_timeout: 20000,
   timeout: 30000,
-  procmodules: [ :bpe_account ],
+  procmodules: [:bpe_account],
   logger_level: :error,
   logger: [
     {:handler, :synrc, :logger_std_h,
@@ -37,4 +37,3 @@ config :kvs,
 config :form,
   module: :form,
   registry: :"Elixir.CRM"
-

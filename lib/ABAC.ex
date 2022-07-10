@@ -28,5 +28,4 @@ defmodule ABAC do
       )
     end
   )
-
 end

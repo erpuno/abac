@@ -23,16 +23,16 @@ defmodule ABAC.Mixfile do
   end
 
   def application() do
-      [ mod: {:abac, [:mnesia, :form, :nitro, :rocksdb, :kvs, :schema ]} ]
+    [mod: {:abac, [:mnesia, :form, :nitro, :rocksdb, :kvs, :schema]}]
   end
 
   def deps() do
     [
-#      {:ex_doc, "~> 0.11", only: :dev},
+      #      {:ex_doc, "~> 0.11", only: :dev},
       {:form, "~> 7.4.1"},
       {:bpe, "~> 7.6.4"},
       {:kvs, "~> 9.4.8"},
-      {:schema, "~> 3.7.1"},
+      {:schema, "~> 3.7.1"}
     ]
   end
 end
