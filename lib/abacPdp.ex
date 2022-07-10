@@ -12,11 +12,15 @@ defmodule ABAC.PDP do
   end
   def policy(_, _), do: false
 
-  def rule(ABAC.request(endpoint: e, resources: resources) = request, ABAC.rule(api_endpoint: e, type: :permit, object: o, condition: c, resource_match: rm) = rule) do
+  def rule(
+    ABAC.request(endpoint: e, resources: resources) = request,
+    ABAC.rule(api_endpoint: e, type: :permit, object: o, condition: c, resource_match: rm) = rule)
+    do
     x = :lists.filter(fn ^o -> true; _ -> false end, resources)
     fold = fn _ -> :erlang.apply(:"Elixir.ABAC.Condition", c, [request, rule]) end
     x != [] and :erlang.apply(:lists, rm, [fold, x])
   end
+
   def rule(_, _), do: false
 
   def match(x, acc) do
