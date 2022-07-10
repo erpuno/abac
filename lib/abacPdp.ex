@@ -21,7 +21,13 @@ defmodule ABAC.PDP do
       case :lists.keyfind(t, 1, resources) do
         false -> false
         object ->
-          case :kvs.index_match(ABAC.rule(id: i, subject: :_, api_endpoint: e, description: :_, type: :permit, condition: :_, object: object), :object, KVS.kvs(mod: :kvs_mnesia)) do
+          case :kvs.index_match(ABAC.rule(id: i,
+                                          subject: :_,
+                                          api_endpoint: e,
+                                          description: :_,
+                                          type: :permit,
+                                          condition: :_,
+                                          object: object), :object, KVS.kvs(mod: :kvs_mnesia)) do
             [ABAC.rule(condition: c) = rule] -> :erlang.apply(:"Elixir.ABAC.Condition", c, [request, rule])
             _ -> false
           end
