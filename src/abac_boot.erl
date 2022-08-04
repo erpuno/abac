@@ -11,19 +11,15 @@ policy(Default) -> [
 
  % ---------------------- CREATE -----------------------------
 
-  #policy{ api_endpoint = create, combining = all,
-    object = #object_form{id = rightsDelegation},
-    rules  = [
-      #rule{ api_endpoint = create, type = permit, object_condition = form_check, values = fields, resource_match = any, subject_condition = employee_check,
-        subject           = #subject_employee{roles = [register, executor, head], substitute_type = [], org = Default},
-        object            = #object_form{id = rightsDelegation, fields = [delegateTo, startTime, endTime, tempDutiesPerform]}  } ] },
+  #policy{ api_endpoint = create, combining = all, object = #object_form{id = rightsDelegation}, rules  = [
+  #rule{ api_endpoint = create, type = permit, object_condition = form_check, values = fields, resource_match = any, subject_condition = employee_check,
+    subject = #subject_employee{roles = [register, executor, head], substitute_type = [], org = Default},
+    object = #object_form{id = rightsDelegation, fields = [delegateTo, startTime, endTime, tempDutiesPerform]}  } ] },
 
-  #policy{ api_endpoint = create, combining = all,
-    object = #object_form{id = assistant},
-    rules  = [
-      #rule{ api_endpoint = create, type = permit, subject_condition = employee_check, object_condition = form_check, values = fields, resource_match = any,
-        subject           = #subject_employee{roles = [admin, securityAdmin], substitute_type = [], org = Default},
-        object            = #object_form{id = assistant, fields = [head, assistants, startTime, endTime]}  } ] },
+  #policy{ api_endpoint = create, combining = all, object = #object_form{id = assistant}, rules  = [
+  #rule{ api_endpoint = create, type = permit, subject_condition = employee_check, object_condition = form_check, values = fields, resource_match = any,
+    subject = #subject_employee{roles = [admin, securityAdmin], substitute_type = [], org = Default},
+    object = #object_form{id = assistant, fields = [head, assistants, startTime, endTime]}  } ] },
 
   #policy{
     api_endpoint = create,
