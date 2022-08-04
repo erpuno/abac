@@ -1,15 +1,17 @@
 -ifndef(SUBJECTS_HRL).
 -define(SUBJECTS_HRL, true).
 
+
 -record(subject_employee, {
                          id = [] :: [] | list() | binary(),
                          roles = [] :: [] | list(atom()),
                          routing = [] :: [] | atom(),
-                         substitute_type = [] :: [] | assistant | delegat,
+                         substitute_type = any :: any | assistant | delegat,
                          status = [] :: [] | atom(),
                          org = [] :: [] | list(),
                          branch = [] :: [] | list()
                        }).
+
 -endif.
 
 

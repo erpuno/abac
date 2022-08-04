@@ -22,28 +22,31 @@
 
 -record(rule, {
               id = [] :: binary(),
+              creator = [] :: atom(),
               api_endpoint = [] :: atom(),
               description = <<>> :: binary(),
               type = auth :: auth | deny,
-              condition = [] :: [] | list(),
+              subject_condition = [] :: [] | list(),
+              object_condition = [] :: [] | list(),
               resource_match = all :: all | any,
               subject = [] :: [],
-              object = [] :: []
-              }).
+              object = [] :: [],
+              values = [] :: []
+}).
 
 -record(policy, {
               id = [] :: binary(),
+              creator = [] :: atom(),
               api_endpoint = [] :: atom(),
               description = <<>> :: binary(),
               combining = all :: all | any,
               object = [] :: [] | tuple(),
               rules = [] :: [] | list()
-               }).
+}).
 
 -record(rule_ref, {
-                    id = [] :: [] | list() | binary(),
-                    resource_match = all :: all | any,
-                    resource_type = [] :: [] | atom()
-                  }).
+  id = [] :: [] | list() | binary(),
+  resource_match = all :: all | any
+}).
 
 -endif.

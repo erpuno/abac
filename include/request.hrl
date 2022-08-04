@@ -16,7 +16,8 @@
                 notification = [] :: [] | tuple(),
                 stage_status = [] :: [] | tuple(),
                 files = [] :: [] | tuple(),
-                employee = [] :: [] | tuple()
+                employee = [] :: [] | tuple(),
+                executors = [] :: [] | list()
 }).
 
 -endif.
