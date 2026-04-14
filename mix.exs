@@ -4,9 +4,8 @@ defmodule ABAC.Mixfile do
   def project() do
     [
       app: :abac,
-      version: "1.8.0",
-      elixir: "~> 1.8",
-      description: "ABAC Attribute Based Access Control",
+      version: "5.4.15",
+      description: "ERP/1 ABAC Attribute Based Access Control",
       package: package(),
       deps: deps()
     ]
@@ -14,7 +13,7 @@ defmodule ABAC.Mixfile do
 
   def package do
     [
-      files: ~w(doc include lib src mix.exs LICENSE),
+      files: ~w(config include lib src mix.exs LICENSE README.md),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :abac,
@@ -23,16 +22,24 @@ defmodule ABAC.Mixfile do
   end
 
   def application() do
-    [mod: {:abac, [:mnesia, :form, :nitro, :rocksdb, :kvs, :schema]}]
+    [
+      mod: {:abac, []},
+      extra_applications: [ :mnesia, :form, :nitro, :kvs, :erp ]
+    ]
   end
 
   def deps() do
     [
-      {:ex_doc, "~> 0.11", only: :dev, runtime: false},
-      {:form, "~> 7.4.1"},
-      {:bpe, "~> 7.6.4"},
-      {:kvs, "~> 9.4.8"},
-      {:schema, "~> 3.8.1"}
+    deps = [
+      {:kvs, "~> 13.4.15"},
+      {:erp, "~> 7.4.15"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
+
+    if System.get_env("KVS_BACKEND") == "rocksdb" do
+      deps ++ [{:rocksdb, "~> 2.5", optional: true}]
+    else
+      deps
+    end
   end
 end

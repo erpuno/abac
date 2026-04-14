@@ -1,38 +1,32 @@
-use Mix.Config
+import Config
 
-config :schema,
+config :erp,
   boot: [:erp_boot, :abac_boot]
 
+backend = System.get_env("KVS_BACKEND") || "mnesia"
+if backend == "rocksdb" do
+  import_config "config.rocksdb.exs"
+else
+  import_config "config.mnesia.exs"
+end
+
 config :bpe,
-  ttl: :infinity,
-  ping_discipline: :undefined,
-  shutdown_timeout: 20000,
-  timeout: 30000,
-  procmodules: [:bpe_account],
-  logger_level: :error,
+  logger_level: :debug,
   logger: [
     {:handler, :synrc, :logger_std_h,
      %{
        level: :debug,
        id: :synrc,
-       max_size: 2000,
        module: :logger_std_h,
-       config: %{type: :file, file: 'abac.log'},
+       config: %{type: :file, file: ~c"abac.log"},
        formatter:
          {:logger_formatter,
           %{
-            template: [:time, ' ', :pid, ' ', :module, ' ', :msg, '\n'],
+            template: [:time, ~c" ", :pid, ~c" ", :msg, ~c"\n"],
             single_line: true
           }}
      }}
   ]
-
-config :kvs,
-  dba: :kvs_rocks,
-  dba_st: :kvs_st,
-  dba_seq: :kvs_mnesia,
-  seq_pad: [:doclink, :process, :monitor],
-  schema: [:kvs, :kvs_stream, :bpe_metainfo, :erp, :abac]
 
 config :form,
   module: :form,
