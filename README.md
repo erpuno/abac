@@ -1,7 +1,8 @@
 ABAC: Attribute Based Access Control (ISO/IEC 29146)
 ====================================================
 
-[![Hex pm](http://img.shields.io/hexpm/v/abac.svg?style=flat&x=1)](https://hex.pm/packages/abac)
+[![Actions Status](https://github.com/synrc/abac/workflows/mix/badge.svg)](https://github.com/synrc/abac/actions)
+[![Hex pm](https://img.shields.io/hexpm/v/abac.svg?style=flat)](https://hex.pm/packages/abac)
 
 Дана бібліотека реалізує систему керування доступом на основі атрибутів (**ABAC**) згідно з міжнародним стандартом **ISO/IEC 29146:2016** (Information technology — Security techniques — A framework for access management) та рекомендаціями **NIST SP 800-162**.
 
