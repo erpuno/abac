@@ -13,7 +13,7 @@ defmodule ABAC.Mixfile do
 
   def package do
     [
-      files: ~w(doc include lib src mix.exs LICENSE),
+      files: ~w(config include lib src mix.exs LICENSE README.md),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :abac,
