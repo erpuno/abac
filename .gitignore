@@ -6,4 +6,5 @@ Mnesia*/
 deps
 rocksdb/
 *.log
+.DS_Store
 doc/
