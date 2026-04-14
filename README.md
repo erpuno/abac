@@ -3,7 +3,9 @@ ABAC: Attribute Based Access Control (ISO/IEC 29146)
 
 [![Hex pm](http://img.shields.io/hexpm/v/abac.svg?style=flat&x=1)](https://hex.pm/packages/abac)
 
-Дана бібліотека реалізує систему керування доступом на основі атрибутів (**ABAC**) згідно з міжнародним стандартом **ISO/IEC 29146:2016** (Information technology — Security techniques — A framework for access management) та рекомендаціями **NIST SP 800-162**.
+Дана бібліотека реалізує систему керування доступом на основі атрибутів (**ABAC**)
+згідно з міжнародним стандартом **ISO/IEC 29146:2016** (Information technology — Security techniques — A framework for access management)
+та рекомендаціями **NIST SP 800-162**.
 
 ## Архітектура (ISO 29146)
 
@@ -37,37 +39,14 @@ ABAC: Attribute Based Access Control (ISO/IEC 29146)
 *   **Документ (`object_file`)**: Атрибути ЕЦП (sign), необхідність сертифікації (needCert), тип документа.
 *   **Форма (`object_form`)**: Ідентифікатори та доступні поля.
 
-## Приклади (для розробників)
-
-Дозвіл на підписання документа лише для користувачів з роллю `BOSS` на стадії процесу `AGREEMENT`:
-
-```erlang
- Rule = #rule{
-    id = <<"sign_boss_rule">>,
-    api_endpoint = 'SIGN',
-    type = auth,
-    subject_condition = employee_check,
-    subject = #subject_employee{roles = ['BOSS']},
-    object_condition = sched_check,
-    object = #object_process{stage = 'AGREEMENT'}
- }.
-
- Policy = #policy{
-    id = <<"gov_sign_policy">>,
-    combining = all,
-    rules = [#rule_ref{id = <<"sign_boss_rule">>}]
- }.
-```
-
 ## Стандарти та відповідність
 
 *   **ISO/IEC 29146:2016** — Архітектурний фреймворк та термінологія.
 *   **NIST SP 800-162** — Настанови з впровадження ABAC.
 *   **XACML 3.0** — Логіка обробки (Permit/Deny/NotApplicable/Indeterminate).
 
-Розробники
-----------
+Автор
+-----
 
-*   Іван Кулик
-*   Вікторія Кошолап
-*   Максим Сохацький
+* Максим Сохацький, Інформаційні Судові Системи
+
