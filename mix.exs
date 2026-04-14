@@ -24,7 +24,7 @@ defmodule ABAC.Mixfile do
   def application() do
     [
       mod: {:abac, []},
-      extra_applications: [:mnesia, :form, :nitro, :kvs, :erp, :rocksdb]
+      extra_applications: [ :mnesia, :form, :nitro, :kvs, :erp ]
     ]
   end
 
