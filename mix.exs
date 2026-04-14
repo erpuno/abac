@@ -29,13 +29,18 @@ defmodule ABAC.Mixfile do
   end
 
   def deps() do
-    [
+    deps = [
       {:bpe, "~> 11.4.15"},
       {:kvs, "~> 13.4.15"},
       {:erp, "~> 7.4.14"},
       {:form, "~> 8.3.0"},
-      {:rocksdb, "~> 2.5"},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
+
+    if System.get_env("KVS_BACKEND") == "rocksdb" do
+      deps ++ [{:rocksdb, "~> 2.5", optional: true}]
+    else
+      deps
+    end
   end
 end
