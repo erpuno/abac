@@ -4,9 +4,8 @@ defmodule ABAC.Mixfile do
   def project() do
     [
       app: :abac,
-      version: "1.8.0",
-      elixir: "~> 1.8",
-      description: "ABAC Attribute Based Access Control",
+      version: "5.4.14",
+      description: "ERP/1 ABAC Attribute Based Access Control",
       package: package(),
       deps: deps()
     ]
@@ -23,16 +22,20 @@ defmodule ABAC.Mixfile do
   end
 
   def application() do
-    [mod: {:abac, [:mnesia, :form, :nitro, :rocksdb, :kvs, :schema]}]
+    [
+      mod: {:abac, []},
+      extra_applications: [:mnesia, :form, :nitro, :kvs, :erp, :rocksdb]
+    ]
   end
 
   def deps() do
     [
-      {:ex_doc, "~> 0.11", only: :dev},
-      {:form, "~> 7.4.1"},
-      {:bpe, "~> 7.6.4"},
-      {:kvs, "~> 9.4.8"},
-      {:schema, "~> 3.8.1"}
+      {:bpe, "~> 11.4.15"},
+      {:kvs, "~> 13.4.15"},
+      {:erp, "~> 7.4.14"},
+      {:form, "~> 8.3.0"},
+      {:rocksdb, "~> 2.5"},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 end

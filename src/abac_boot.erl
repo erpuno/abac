@@ -2848,7 +2848,7 @@ policy(Default) -> [
         object            = #object_file{sign = false, convert = any, needCert = false}
       }
     ]
-  }
+  },
   #policy{
     api_endpoint = deleteFile,
     combining    = any,
@@ -6075,7 +6075,7 @@ policy(Default) -> [
         object         = #object_process{module = 'Elixir.AutoTask.Proc', stage = "Familiarization"}
       }
     ]
-  }
+  },
 
   #policy{
     api_endpoint = toAttention,

@@ -36,7 +36,7 @@ defmodule ABAC.PIP do
   defp subject(ABAC.subject_employee() = e, _), do: e
   defp subject(ERP."Employee"() = e, ABAC.context(pid: [])), do: subject(e)
   defp subject(ERP."Employee"() = e, ABAC.context(pid: pid)) do
-    BPE.process(executors: execs, docs: [doc | _]) = :bpe.load(pid)
+    BPE.process(executors: execs, docs: [doc | _]) = BPE.load(pid)
     ABAC.subject_employee(id: i) = subj = subject(e)
     status = case :lists.keyfind(i, 2, execs) do BPE.executor(status: s) -> :lists.map(&BPE.status(&1, :id), s); _ -> [] end
     routing =
@@ -57,8 +57,8 @@ defmodule ABAC.PIP do
   defp object(:pid, ABAC.context(pid: [ABAC.object_process() | _] = p)), do: p
   defp object(:pid, ABAC.context(pid: [])), do: []
   defp object(:pid, ABAC.context(pid: pid)) do
-    BPE.process(module: m) = proc = :bpe.load(pid)
-    BPE.hist(task: BPE.sequenceFlow(source: s, target: t)) = :bpe.head(pid)
+    BPE.process(module: m) = proc = BPE.load(pid)
+    BPE.hist(task: BPE.sequenceFlow(source: s, target: t)) = BPE.head(pid)
     status = m.status({:request, s, t}, proc)
     [ABAC.object_process(module: m, status: status, stage: BPE.sequenceFlow(source: s, target: t), status: sS), ABAC.object_process(module: m, stage: t, status: status)]
   end
@@ -80,9 +80,9 @@ defmodule ABAC.PIP do
     ABAC.object_employee(id: i)
   defp object(:executors, ABAC.context(executors: [ABAC.object_executor() | _] = e)), do: e
   defp object(:executors, ABAC.context(pid: pid, executors: [BPE.executor() | _] = execs)), do:
-    (case :bpe.load(pid) do BPE.process(docs: [doc | _]) -> :lists.flatten(:lists.map(&executor(&1, doc), execs)) ; _ -> [] end)
+    (case BPE.load(pid) do BPE.process(docs: [doc | _]) -> :lists.flatten(:lists.map(&executor(&1, doc), execs)) ; _ -> [] end)
   defp object(:executors, ABAC.context(pid: pid)) when is_binary(pid), do:
-    (case :bpe.load(pid) do BPE.process(executors: execs, docs: [doc | _]) -> :lists.flatten(:lists.map(&executor(&1, doc), execs)) ; _ -> [] end)
+    (case BPE.load(pid) do BPE.process(executors: execs, docs: [doc | _]) -> :lists.flatten(:lists.map(&executor(&1, doc), execs)) ; _ -> [] end)
   defp object(:notification, ABAC.context(notification: ABAC.object_notification() = n)), do: n
   defp object(:notification, ABAC.context(notification: ERP.dict(id: i))), do:
     ABAC.object_notification(id: i)

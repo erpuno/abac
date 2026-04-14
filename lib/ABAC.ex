@@ -14,7 +14,7 @@ defmodule ABAC do
       Enum.each(
         Record.extract_all(from_lib: "abac/include/" <> t),
         fn {name, definition} ->
-          prev = :application.get_env(:kernel, :nitro_tables, [])
+          prev = :application.get_env(:kernel, :abac_tables, [])
 
           case :lists.member(name, prev) do
             true ->
@@ -22,7 +22,7 @@ defmodule ABAC do
 
             false ->
               Record.defrecord(name, definition)
-              :application.set_env(:kernel, :nitro_tables, [name | prev])
+              :application.set_env(:kernel, :abac_tables, [name | prev])
           end
         end
       )
