@@ -32,7 +32,7 @@ defmodule ABAC.Mixfile do
     deps = [
       {:kvs, "~> 13.4.15"},
       {:erp, "~> 7.4.15"},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
 
     if System.get_env("KVS_BACKEND") == "rocksdb" do
